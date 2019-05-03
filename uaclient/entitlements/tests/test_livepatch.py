@@ -51,7 +51,7 @@ PLATFORM_INFO_SUPPORTED = MappingProxyType({
 M_PATH = 'uaclient.entitlements.livepatch.'  # mock path
 
 
-class TestLivepatchContractStatus:
+class TestLivepatchContractStatus(object):
 
     def test_contract_status_entitled(self, tmpdir):
         """The contract_status returns ENTITLED when entitled is True."""
@@ -75,7 +75,7 @@ class TestLivepatchContractStatus:
         assert status.NONE == entitlement.contract_status()
 
 
-class TestLivepatchOperationalStatus:
+class TestLivepatchOperationalStatus(object):
 
     def test_operational_status_inapplicable_on_checked_affordances(
             self, tmpdir):
@@ -125,7 +125,7 @@ class TestLivepatchOperationalStatus:
         assert status.NONE == entitlement.contract_status()
 
 
-class TestLivepatchProcessDirectives:
+class TestLivepatchProcessDirectives(object):
 
     @pytest.mark.parametrize('directive_key,livepatch_param_tmpl', (
         ('remoteServer', 'remote-server=%s'), ('caCerts', 'ca-certs=%s')))
@@ -165,7 +165,7 @@ class TestLivepatchProcessDirectives:
         assert 0 == m_subp.call_count
 
 
-class TestLivepatchEntitlementCanEnable:
+class TestLivepatchEntitlementCanEnable(object):
 
     def test_can_enable_true_on_entitlement_inactive(self, tmpdir):
         """When operational status is INACTIVE, can_enable returns True."""
@@ -264,7 +264,7 @@ class TestLivepatchEntitlementCanEnable:
         assert msg == m_stdout.getvalue()
 
 
-class TestLivepatchEntitlementEnable:
+class TestLivepatchEntitlementEnable(object):
 
     with_logs = True
 

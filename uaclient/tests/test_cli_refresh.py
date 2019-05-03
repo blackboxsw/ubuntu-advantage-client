@@ -8,15 +8,15 @@ except ImportError:
     # typing isn't available on trusty, so ignore its absence
     pass
 
-from uaclient import status
 from uaclient.cli import action_refresh
+from uaclient import status
 
 M_PATH = 'uaclient.cli.'
 
 
 @mock.patch(M_PATH + 'sys.stdout')
 @mock.patch(M_PATH + 'os.getuid', return_value=0)
-class TestActionRefresh:
+class TestActionRefresh(object):
 
     def test_non_root_users_are_rejected(self, getuid, stdout):
         """Check that a UID != 0 will receive a message and exit non-zero"""

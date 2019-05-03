@@ -91,8 +91,7 @@ class UAEntitlement(metaclass=abc.ABCMeta):
         return retval
 
     def can_enable(self, silent: bool = False) -> bool:
-        """
-        Report whether or not enabling is possible for the entitlement.
+        """Report whether or not enabling is possible for the entitlement.
 
         :param silent: if True, suppress output
         """

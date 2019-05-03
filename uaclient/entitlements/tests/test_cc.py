@@ -1,10 +1,10 @@
 """Tests related to uaclient.entitlement.base module."""
 
 import copy
+from io import StringIO
 import itertools
 import mock
 import os.path
-from io import StringIO
 from types import MappingProxyType
 
 import pytest
@@ -50,7 +50,7 @@ PLATFORM_INFO_SUPPORTED = MappingProxyType({
 })
 
 
-class TestCommonCriteriaEntitlementOperationalStatus:
+class TestCommonCriteriaEntitlementOperationalStatus(object):
 
     @pytest.mark.parametrize(
         'arch,series,details',
@@ -77,7 +77,7 @@ class TestCommonCriteriaEntitlementOperationalStatus:
         assert details == op_status_details
 
 
-class TestCommonCriteriaEntitlementCanEnable:
+class TestCommonCriteriaEntitlementCanEnable(object):
 
     @mock.patch('uaclient.util.subp', return_value=('', ''))
     @mock.patch('uaclient.util.get_platform_info')
@@ -98,7 +98,7 @@ class TestCommonCriteriaEntitlementCanEnable:
         assert '' == m_stdout.getvalue()
 
 
-class TestCommonCriteriaEntitlementEnable:
+class TestCommonCriteriaEntitlementEnable(object):
 
     # Paramterize True/False for apt_transport_https and ca_certificates
     @pytest.mark.parametrize('apt_transport_https,ca_certificates',

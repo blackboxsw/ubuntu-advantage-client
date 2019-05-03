@@ -66,7 +66,7 @@ BUG_REPORT_URL="http://bugs.launchpad.net/ubuntu/"
 """
 
 
-class TestGetDictDeltas:
+class TestGetDictDeltas(object):
 
     @pytest.mark.parametrize('value1,value2',
                              (('val1', 'val2'), ([1], [2]), ((1, 2), (3, 4))))
@@ -100,7 +100,7 @@ class TestGetDictDeltas:
         assert expected == util.get_dict_deltas(orig_dict, new_dict)
 
 
-class TestIsContainer:
+class TestIsContainer(object):
 
     @mock.patch('uaclient.util.subp')
     def test_true_systemd_detect_virt_success(self, m_subp):
@@ -146,7 +146,7 @@ class TestIsContainer:
         assert exists_calls == m_exists.call_args_list
 
 
-class TestParseOSRelease:
+class TestParseOSRelease(object):
 
     def test_parse_os_release(self, tmpdir):
         """parse_os_release returns a dict of values from /etc/os-release."""
@@ -162,7 +162,7 @@ class TestParseOSRelease:
         assert expected == util.parse_os_release(release_file.strpath)
 
 
-class TestGetPlatformInfo:
+class TestGetPlatformInfo(object):
 
     @mock.patch('uaclient.util.subp')
     @mock.patch('uaclient.util.parse_os_release')
@@ -204,7 +204,7 @@ class TestGetPlatformInfo:
                 assert expected == util.get_platform_info()
 
 
-class TestGetMachineId:
+class TestGetMachineId(object):
 
     def test_get_machine_id_from_etc_machine_id(self, tmpdir):
         """Presence of /etc/machine-id is returned if it exists."""

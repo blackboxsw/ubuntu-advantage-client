@@ -24,7 +24,7 @@ class ConfigAbsentError(RuntimeError):
     pass
 
 
-class UAConfig:
+class UAConfig(object):
 
     data_paths = {
         'bound-macaroon': 'bound-macaroon',

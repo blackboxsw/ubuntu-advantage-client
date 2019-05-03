@@ -4,17 +4,20 @@ import pytest
 
 from uaclient.contract import (
     API_V1_TMPL_CONTEXT_MACHINE_TOKEN_REFRESH,
-    API_V1_TMPL_RESOURCE_MACHINE_ACCESS, process_entitlement_delta,
+    API_V1_TMPL_RESOURCE_MACHINE_ACCESS,
+    process_entitlement_delta,
     request_updated_contract)
 
-from uaclient.testing.fakes import FakeConfig, FakeContractClient
+from uaclient.testing.fakes import (
+    FakeConfig,
+    FakeContractClient)
 
 
 M_PATH = 'uaclient.contract.'
 M_REPO_PATH = 'uaclient.entitlements.repo.RepoEntitlement.'
 
 
-class TestProcessEntitlementDeltas:
+class TestProcessEntitlementDeltas(object):
 
     def test_error_on_missing_entitlement_type(self):
         """Raise an error when neither dict contains entitlement type."""
@@ -53,7 +56,7 @@ class TestProcessEntitlementDeltas:
         assert expected_calls == m_process_contract_deltas.call_args_list
 
 
-class TestRequestUpdatedContract:
+class TestRequestUpdatedContract(object):
 
     @mock.patch(M_PATH + 'UAContractClient')
     def test_attached_config_and_contract_token_runtime_error(self, client):

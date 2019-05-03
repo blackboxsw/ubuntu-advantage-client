@@ -64,7 +64,7 @@ def concrete_entitlement_factory(tmpdir):
     return factory
 
 
-class TestUaEntitlement:
+class TestUaEntitlement(object):
 
     def test_entitlement_abstract_class(self):
         """UAEntitlement is abstract requiring concrete methods."""
@@ -122,8 +122,7 @@ class TestUaEntitlement:
 
     def test_can_disable_false_on_entitlement_inapplicable(
             self, capsys, concrete_entitlement_factory):
-        """
-        When operational status INAPPLICABLE, can_disable returns False.
+        """When operational status INAPPLICABLE, can_disable returns False.
 
         It should also output the message from operational_status.
         """

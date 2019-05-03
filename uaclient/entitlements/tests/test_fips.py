@@ -57,8 +57,7 @@ M_GETPLATFORM = M_REPOPATH + 'util.get_platform_info'
 
 @pytest.fixture(params=[FIPSEntitlement, FIPSUpdatesEntitlement])
 def entitlement(request, tmpdir):
-    """
-    pytest fixture for a FIPS/FIPS Updates entitlement with some default config
+    """pytest fixture for a FIPS/FIPS Updates entitlement with default config
 
     (Uses the tmpdir fixture for the underlying config cache.)
     """
@@ -70,7 +69,7 @@ def entitlement(request, tmpdir):
     return cls(cfg)
 
 
-class TestFIPSEntitlementCanEnable:
+class TestFIPSEntitlementCanEnable(object):
 
     def test_can_enable_true_on_entitlement_inactive(self, entitlement):
         """When operational status is INACTIVE, can_enable returns True."""
@@ -81,7 +80,7 @@ class TestFIPSEntitlementCanEnable:
         assert '' == m_stdout.getvalue()
 
 
-class TestFIPSEntitlementEnable:
+class TestFIPSEntitlementEnable(object):
 
     def test_enable_configures_apt_sources_and_auth_files(self, entitlement):
         """When entitled, configure apt repo auth token, pinning and url."""
@@ -201,7 +200,7 @@ def _fips_pkg_combinations():
     return ret
 
 
-class TestFipsEntitlementPackages:
+class TestFipsEntitlementPackages(object):
 
     @mock.patch(M_PATH + 'apt.get_installed_packages', return_value=[])
     def test_packages_is_list(self, _mock, entitlement):
@@ -243,7 +242,7 @@ class TestFipsEntitlementPackages:
         assert before == after
 
 
-class TestFIPSEntitlementDisable:
+class TestFIPSEntitlementDisable(object):
 
     # Paramterize True/False for silent and force
     @pytest.mark.parametrize(

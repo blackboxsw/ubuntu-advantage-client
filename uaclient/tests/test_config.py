@@ -10,7 +10,7 @@ KNOWN_DATA_PATHS = (('bound-macaroon', 'bound-macaroon'),
                     ('accounts', 'accounts.json'))
 
 
-class TestAccounts:
+class TestAccounts(object):
 
     def test_accounts_returns_empty_list_when_no_cached_account_value(
             self, tmpdir):
@@ -75,7 +75,7 @@ class TestAccounts:
         assert expected_warning in caplog_text()
 
 
-class TestDataPath:
+class TestDataPath(object):
 
     def test_data_path_returns_data_dir_path_without_key(self):
         """The data_path method returns the data_dir when key is absent."""
@@ -107,7 +107,7 @@ class TestDataPath:
         assert '/my/d/%s' % key == cfg.data_path(key=key, private=False)
 
 
-class TestWriteCache:
+class TestWriteCache(object):
 
     @pytest.mark.parametrize('key,content', (
         ('unknownkey', 'content1'), ('another-one', 'content2')))
@@ -161,7 +161,7 @@ class TestWriteCache:
         assert 'value' == cfg.read_cache('key')
 
 
-class TestReadCache:
+class TestReadCache(object):
 
     @pytest.mark.parametrize('key,path_basename', KNOWN_DATA_PATHS)
     def test_read_cache_returns_none_when_data_path_absent(
@@ -195,7 +195,7 @@ class TestReadCache:
         assert expected == cfg.read_cache(key)
 
 
-class TestDeleteCache:
+class TestDeleteCache(object):
 
     @pytest.mark.parametrize(
         'property_name,data_path_name,expected_null_value', (
@@ -203,8 +203,7 @@ class TestDeleteCache:
             ('contracts', 'account-contracts', [])))
     def test_delete_cache_properly_clears_all_caches_simple(
             self, tmpdir, property_name, data_path_name, expected_null_value):
-        """
-        Ensure that delete_cache clears the cache for simple attributes
+        """Ensure that delete_cache clears the cache for simple attributes
 
         (Simple in this context means those that are simply read from the
         filesystem and returned.)

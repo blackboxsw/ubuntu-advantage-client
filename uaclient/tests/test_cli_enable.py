@@ -5,7 +5,7 @@ import pytest
 from uaclient.cli import _perform_enable
 
 
-class TestPerformEnable:
+class TestPerformEnable(object):
 
     @mock.patch('uaclient.cli.entitlements')
     def test_missing_entitlement_raises_keyerror(self, m_entitlements):

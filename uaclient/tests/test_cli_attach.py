@@ -28,7 +28,7 @@ def test_non_root_users_are_rejected(stdout, getuid):
 
 # For all of these tests we want to appear as root, so mock on the class
 @mock.patch(M_PATH + 'os.getuid', mock.Mock(return_value=0))
-class TestActionAttach:
+class TestActionAttach(object):
 
     @mock.patch(M_PATH + 'sys.stdout')
     def test_already_attached(self, stdout):
@@ -51,7 +51,7 @@ class TestActionAttach:
             self, action_status, contract_client, discharge_root_macaroon,
             request_updated_contract):
         """A mock-heavy test for the happy path without an argument"""
-        # TODO: Improve this test with less general mocking and more
+        # TODO(Improve this test with less general mocking and more)
         # post-conditions
         bound_macaroon = b'bound_bytes_macaroon'
         discharge_root_macaroon.return_value = bound_macaroon
@@ -81,7 +81,7 @@ class TestActionAttach:
                                        contract_machine_attach,
                                        discharge_root_macaroon):
         """A mock-heavy test for the happy path with the contract token arg"""
-        # TODO: Improve this test with less general mocking and more
+        # TODO(Improve this test with less general mocking and more)
         # post-conditions
         token = 'contract-token'
         args = mock.MagicMock(token=token)
@@ -123,7 +123,7 @@ class TestActionAttach:
         assert mock.call(expected_msg) in stdout.write.call_args_list
 
 
-class TestParser:
+class TestParser(object):
 
     def test_attach_parser_creates_a_parser_when_not_provided(self):
         """Create a named parser configured for 'attach' on no arguments."""

@@ -42,8 +42,7 @@ M_GETPLATFORM = M_REPOPATH + 'util.get_platform_info'
 
 @pytest.fixture
 def entitlement(tmpdir):
-    """
-    A pytest fixture to create a ESMEntitlement with some default config
+    """A pytest fixture to create a ESMEntitlement with some default config
 
     (Uses the tmpdir fixture for the underlying config cache.)
     """
@@ -53,7 +52,7 @@ def entitlement(tmpdir):
     return ESMEntitlement(cfg)
 
 
-class TestESMEntitlementDisable:
+class TestESMEntitlementDisable(object):
 
     # Paramterize True/False for silent and force
     @pytest.mark.parametrize(

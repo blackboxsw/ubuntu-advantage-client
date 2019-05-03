@@ -6,8 +6,7 @@ import pytest
 
 @pytest.fixture
 def caplog_text(request):
-    """
-    A fixture that returns a function that returns caplog.text
+    """A fixture that returns a function that returns caplog.text
 
     caplog isn't available in pytest in all of our target releases; this either
     uses caplog.text if available, or a shim which replicates what it does.
@@ -23,7 +22,7 @@ def caplog_text(request):
     """
     try:
         try:
-            # TODO pyest 3.4 is funky and logs debug level by default
+            # TODO(pytest 3.4 is funky and logs debug level by default)
             # https://docs.pytest.org/en/features/logging.html#\
             #            incompatible-changes-in-pytest-3-4
             # write_cache debug logs are seen on Bionic in test_livepatch:

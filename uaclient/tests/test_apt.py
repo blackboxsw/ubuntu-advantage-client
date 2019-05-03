@@ -20,7 +20,7 @@ from uaclient.entitlements.tests.test_cc import (
     CC_MACHINE_TOKEN, CC_RESOURCE_ENTITLED)
 
 
-class TestAddPPAPinning:
+class TestAddPPAPinning(object):
 
     @mock.patch('uaclient.util.get_platform_info')
     def test_write_apt_pin_file_to_apt_preferences(self, m_platform, tmpdir):
@@ -37,7 +37,7 @@ class TestAddPPAPinning:
         assert expected_pref == util.load_file(pref_file)
 
 
-class TestFindAptListFilesFromRepoSeries:
+class TestFindAptListFilesFromRepoSeries(object):
 
     @mock.patch('uaclient.util.subp')
     def test_find_all_apt_list_files_from_apt_config_key(self, m_subp, tmpdir):
@@ -58,7 +58,7 @@ class TestFindAptListFilesFromRepoSeries:
             repo_url, 'xenial')
 
 
-class TestRemoveAptListFiles:
+class TestRemoveAptListFiles(object):
 
     @mock.patch('uaclient.util.subp')
     def test_remove_all_apt_list_files_from_apt_config_key(
@@ -81,7 +81,7 @@ class TestRemoveAptListFiles:
         assert [nomatch_file] == glob.glob('%s/*' % tmpdir.strpath)
 
 
-class TestValidAptCredentials:
+class TestValidAptCredentials(object):
 
     @mock.patch('uaclient.util.subp')
     @mock.patch('os.path.exists', return_value=False)
@@ -141,7 +141,7 @@ class TestValidAptCredentials:
         assert [mock.call('/tmp/uaclient-apt-test')] == m_unlink.call_args_list
 
 
-class TestAddAuthAptRepo:
+class TestAddAuthAptRepo(object):
 
     @mock.patch('uaclient.util.subp')
     @mock.patch('uaclient.apt.get_apt_auth_file_from_apt_config')
@@ -263,7 +263,7 @@ class TestAddAuthAptRepo:
         assert expected_content == util.load_file(auth_file)
 
 
-class TestAddAptAuthConfEntry:
+class TestAddAptAuthConfEntry(object):
 
     @mock.patch('uaclient.apt.get_apt_auth_file_from_apt_config')
     def test_replaces_old_credentials_with_new(
@@ -314,7 +314,7 @@ class TestAddAptAuthConfEntry:
         assert expected_content == util.load_file(auth_file)
 
 
-class TestMigrateAptSources:
+class TestMigrateAptSources(object):
 
     @mock.patch('uaclient.apt.os.unlink')
     @mock.patch('uaclient.apt.add_auth_apt_repo')
@@ -417,8 +417,7 @@ class TestMigrateAptSources:
 
 @pytest.fixture(params=(mock.sentinel.default, None, 'some_string'))
 def remove_auth_apt_repo_kwargs(request):
-    """
-    Parameterized fixture to generate all permutations of kwargs we need
+    """Parameterized fixture to generate all permutations of kwargs we need
 
     Note that this tests three states for keyring_file: using the default,
     explicitly passing None and explicitly passing a string.
@@ -430,7 +429,7 @@ def remove_auth_apt_repo_kwargs(request):
     return kwargs
 
 
-class TestRemoveAuthAptRepo:
+class TestRemoveAuthAptRepo(object):
 
     @mock.patch('uaclient.apt.util.subp')
     @mock.patch('uaclient.apt.remove_repo_from_apt_auth_file')
@@ -476,7 +475,7 @@ class TestRemoveAuthAptRepo:
             assert mock.call(keyring_file) not in m_del_file.call_args_list
 
 
-class TestRemoveRepoFromAptAuthFile:
+class TestRemoveRepoFromAptAuthFile(object):
 
     @mock.patch('uaclient.apt.os.unlink')
     @mock.patch('uaclient.apt.util.write_file')
@@ -544,7 +543,7 @@ class TestRemoveRepoFromAptAuthFile:
         assert after_content == auth_file.read('rb')
 
 
-class TestGetInstalledPackages:
+class TestGetInstalledPackages(object):
 
     @mock.patch('uaclient.apt.util.subp', return_value=('', ''))
     def test_correct_command_called(self, m_subp):

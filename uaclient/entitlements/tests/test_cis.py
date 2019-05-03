@@ -1,7 +1,7 @@
 """Tests related to uaclient.entitlement.base module."""
 
-import mock
 from io import StringIO
+import mock
 
 from uaclient import config, status
 from uaclient.entitlements.cis import CISEntitlement
@@ -35,7 +35,7 @@ CIS_RESOURCE_ENTITLED = {
 }
 
 
-class TestCISEntitlementCanEnable:
+class TestCISEntitlementCanEnable(object):
 
     def test_can_enable_true_on_entitlement_inactive(self, tmpdir):
         """When operational status is INACTIVE, can_enable returns True."""
@@ -52,7 +52,7 @@ class TestCISEntitlementCanEnable:
         assert '' == m_stdout.getvalue()
 
 
-class TestCISEntitlementEnable:
+class TestCISEntitlementEnable(object):
 
     @mock.patch('uaclient.util.subp')
     @mock.patch('uaclient.util.get_platform_info')

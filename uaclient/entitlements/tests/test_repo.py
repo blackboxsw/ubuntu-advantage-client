@@ -57,8 +57,7 @@ class RepoTestEntitlement(RepoEntitlement):
 
 @pytest.fixture
 def entitlement(tmpdir):
-    """
-    A pytest fixture to create a RepoTestEntitlement with some default config
+    """A pytest fixture creating a RepoTestEntitlement with default config
 
     (Uses the tmpdir fixture for the underlying config cache.)
     """
@@ -68,7 +67,7 @@ def entitlement(tmpdir):
     return RepoTestEntitlement(cfg)
 
 
-class TestOperationalStatus:
+class TestOperationalStatus(object):
 
     @mock.patch(M_PATH + 'util.get_platform_info')
     def test_inapplicable_on_failed_check_affordances(
@@ -101,7 +100,7 @@ class TestOperationalStatus:
         assert 'Repo Test Class is not entitled' == op_details
 
 
-class TestProcessContractDeltas:
+class TestProcessContractDeltas(object):
 
     @pytest.mark.parametrize('orig_access', ({}, {'entitlement': {}}))
     @mock.patch.object(RepoTestEntitlement, 'operational_status')
@@ -217,7 +216,7 @@ class TestProcessContractDeltas:
         assert apt_auth_remove_calls == m_remove_auth_apt_repo.call_args_list
 
 
-class TestRepoEnable:
+class TestRepoEnable(object):
 
     @pytest.mark.parametrize('silent_if_inapplicable', (True, False, None))
     @mock.patch.object(RepoTestEntitlement, 'can_enable', return_value=False)
