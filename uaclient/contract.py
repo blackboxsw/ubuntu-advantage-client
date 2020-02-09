@@ -174,6 +174,7 @@ class UAContractClient(serviceclient.UAServiceClient):
         response, headers = self.request_url(url, headers=headers, data=data)
         if headers.get("expires"):
             response["expires"] = headers["expires"]
+        self.cfg.delete_cache_key("machine-token")
         self.cfg.write_cache("machine-token", response)
         return response
 
@@ -280,18 +281,11 @@ def request_updated_contract(
                 status.MESSAGE_CONTRACT_EXPIRED_ERROR
             )
     user_errors = []
-    for name, entitlement in sorted(cfg.entitlements.items()):
-        if entitlement["entitlement"].get("entitled"):
-            # Obtain each entitlement's accessContext for this machine
-            new_access = contract_client.request_resource_machine_access(
-                new_token["machineToken"], name
-            )
-        else:
-            new_access = entitlement
+    for name, new_entitlement in sorted(cfg.entitlements.items()):
         try:
             process_entitlement_delta(
                 orig_entitlements.get(name, {}),
-                new_access,
+                new_entitlement,
                 allow_enable=allow_enable,
             )
         except exceptions.UserFacingError as e:

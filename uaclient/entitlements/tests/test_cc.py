@@ -15,33 +15,31 @@ from uaclient.entitlements.cc import CC_README, CommonCriteriaEntitlement
 
 M_REPOPATH = "uaclient.entitlements.repo."
 
-CC_MACHINE_TOKEN = {
-    "machineToken": "blah",
-    "machineTokenInfo": {
-        "contractInfo": {
-            "resourceEntitlements": [{"type": "cc-eal", "entitled": True}]
-        }
-    },
-}
-
 
 CC_RESOURCE_ENTITLED = {
-    "resourceToken": "TOKEN",
-    "entitlement": {
-        "obligations": {"enableByDefault": False},
-        "type": "cc-eal",
-        "entitled": True,
-        "directives": {
-            "aptURL": "http://CC",
-            "aptKey": "APTKEY",
-            "suites": ["xenial"],
-        },
-        "affordances": {
-            "architectures": ["x86_64", "ppc64le", "s390x"],
-            "series": ["xenial"],
-        },
+    "obligations": {"enableByDefault": False},
+    "type": "cc-eal",
+    "entitled": True,
+    "directives": {
+        "aptURL": "http://CC",
+        "aptKey": "APTKEY",
+        "suites": ["xenial"],
+    },
+    "affordances": {
+        "architectures": ["x86_64", "ppc64le", "s390x"],
+        "series": ["xenial"],
     },
 }
+
+
+CC_MACHINE_TOKEN = {
+    "resourceTokens": [{"Type": "cc-eal", "Token": "TOKEN"}],
+    "machineToken": "blah",
+    "machineTokenInfo": {
+        "contractInfo": {"resourceEntitlements": [CC_RESOURCE_ENTITLED]}
+    },
+}
+
 
 PLATFORM_INFO_SUPPORTED = MappingProxyType(
     {

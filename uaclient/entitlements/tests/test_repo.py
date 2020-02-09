@@ -65,7 +65,7 @@ class TestUserFacingStatus:
     @mock.patch(M_PATH + "util.get_platform_info")
     def test_unavailable_on_unentitled(self, m_platform_info, entitlement):
         """When unentitled, return UNAVAILABLE."""
-        no_entitlements = copy.deepcopy(machine_token(RepoTestEntitlement))
+        no_entitlements = copy.deepcopy(machine_token("blah"))
         # delete all enttlements
         no_entitlements["machineTokenInfo"]["contractInfo"][
             "resourceEntitlements"
@@ -139,7 +139,7 @@ class TestProcessContractDeltas:
             {"entitlement": {"entitled": True}},
             {
                 "entitlement": {"obligations": {"enableByDefault": False}},
-                "resourceToken": "TOKEN",
+                "resourceToken": "repotest-token",
             },
         )
         assert [] == m_remove_apt_config.call_args_list
@@ -167,7 +167,7 @@ class TestProcessContractDeltas:
             {"entitlement": {"entitled": True}},
             {
                 "entitlement": {"obligations": {"enableByDefault": True}},
-                "resourceToken": "TOKEN",
+                "resourceToken": "repotest-token",
             },
             allow_enable=True,
         )
@@ -197,7 +197,7 @@ class TestProcessContractDeltas:
             {"entitlement": {"entitled": True}},
             {
                 "entitlement": {"obligations": {"enableByDefault": True}},
-                "resourceToken": "TOKEN",
+                "resourceToken": "repotest-token",
             },
             allow_enable=False,
         )
@@ -226,7 +226,7 @@ class TestProcessContractDeltas:
             {"entitlement": {"entitled": True}},
             {
                 "entitlement": {"obligations": {"enableByDefault": False}},
-                "resourceToken": "TOKEN",
+                "resourceToken": "repotest-token",
             },
         )
         assert [mock.call()] == m_remove_apt_config.call_args_list
@@ -264,7 +264,7 @@ class TestProcessContractDeltas:
                     "obligations": {"enableByDefault": False},
                     "directives": {"aptURL": "http://new"},
                 },
-                "resourceToken": "TOKEN",
+                "resourceToken": "repotest-token",
             },
         )
         assert [mock.call()] == m_remove_apt_config.call_args_list
@@ -391,7 +391,7 @@ class TestRepoEnable:
             mock.call(
                 "/etc/apt/sources.list.d/ubuntu-repotest-xenial.list",
                 "http://REPOTEST",
-                "TOKEN",
+                "repotest-token",
                 ["xenial"],
                 entitlement.repo_key_file,
             )

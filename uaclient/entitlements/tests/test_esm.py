@@ -73,7 +73,7 @@ class TestESMInfraEntitlementEnable:
                     entitlement.name
                 ),
                 "http://{}".format(entitlement.name.upper()),
-                "TOKEN",
+                "%s-token" % entitlement.name,
                 ["trusty"],
                 entitlement.repo_key_file,
             )
@@ -157,7 +157,7 @@ class TestESMInfraEntitlementEnable:
                     entitlement.name
                 ),
                 "http://{}".format(entitlement.name.upper()),
-                "TOKEN",
+                "%s-token" % entitlement.name,
                 ["trusty"],
                 entitlement.repo_key_file,
             )

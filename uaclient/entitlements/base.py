@@ -100,9 +100,7 @@ class UAEntitlement(metaclass=abc.ABCMeta):
         :param silent: if True, suppress output
         """
         if self.is_access_expired():
-            token = self.cfg.machine_token["machineToken"]
-            contract_client = contract.UAContractClient(self.cfg)
-            contract_client.request_resource_machine_access(token, self.name)
+            contract.request_updated_contract(self.cfg)
         if not self.contract_status() == ContractStatus.ENTITLED:
             if not silent:
                 print(status.MESSAGE_UNENTITLED_TMPL.format(title=self.title))

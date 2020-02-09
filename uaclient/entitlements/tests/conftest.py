@@ -3,19 +3,35 @@ import pytest
 from uaclient import config
 
 try:
-    from typing import Any, Dict, List  # noqa
+    from typing import Any, Dict, List, Optional  # noqa
 except ImportError:
     # typing isn't available on trusty, so ignore its absence
     pass
 
 
-def machine_token(entitlement_type: str) -> "Dict[str, Any]":
+def machine_token(
+    entitlement_type: str,
+    *,
+    affordances: "Dict[str, Any]" = None,
+    directives: "Dict[str, Any]" = None,
+    entitled: "Optional[bool]" = True,
+    suites: "List[str]" = None
+) -> "Dict[str, Any]":
     return {
+        "resourceTokens": [
+            {"Type": entitlement_type, "Token": "%s-token" % entitlement_type}
+        ],
         "machineToken": "blah",
         "machineTokenInfo": {
             "contractInfo": {
                 "resourceEntitlements": [
-                    {"type": entitlement_type, "entitled": True}
+                    machine_access(
+                        entitlement_type,
+                        affordances=affordances,
+                        directives=directives,
+                        entitled=entitled,
+                        suites=suites,
+                    )
                 ]
             }
         },
@@ -27,6 +43,7 @@ def machine_access(
     *,
     affordances: "Dict[str, Any]" = None,
     directives: "Dict[str, Any]" = None,
+    entitled: "Optional[bool]" = True,
     suites: "List[str]" = None
 ) -> "Dict[str, Any]":
     if affordances is None:
@@ -40,14 +57,11 @@ def machine_access(
             "suites": suites,
         }
     return {
-        "resourceToken": "TOKEN",
-        "entitlement": {
-            "obligations": {"enableByDefault": True},
-            "type": entitlement_type,
-            "entitled": True,
-            "directives": directives,
-            "affordances": affordances,
-        },
+        "obligations": {"enableByDefault": True},
+        "type": entitlement_type,
+        "entitled": True,
+        "directives": directives,
+        "affordances": affordances,
     }
 
 
@@ -64,10 +78,9 @@ def entitlement_factory(tmpdir):
 
     def factory_func(cls, *, affordances=None, directives=None, suites=None):
         cfg = config.UAConfig(cfg={"data_dir": tmpdir.strpath})
-        cfg.write_cache("machine-token", machine_token(cls.name))
         cfg.write_cache(
-            "machine-access-{}".format(cls.name),
-            machine_access(
+            "machine-token",
+            machine_token(
                 cls.name,
                 affordances=affordances,
                 directives=directives,
