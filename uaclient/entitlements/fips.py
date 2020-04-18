@@ -2,7 +2,9 @@ from uaclient.entitlements import repo
 from uaclient import apt, status, util
 
 try:
-    from typing import Callable, Dict, List, Set, Tuple, Union  # noqa
+    from typing import Any, Callable, Dict, List, Set, Tuple, Union  # noqa
+
+    StaticAffordance = Tuple[str, Callable[[], Any], bool]
 except ImportError:
     # typing isn't available on trusty, so ignore its absence
     pass
@@ -61,9 +63,12 @@ class FIPSEntitlement(FIPSCommonEntitlement):
     title = "FIPS"
     description = "NIST-certified FIPS modules"
     origin = "UbuntuFIPS"
-    static_affordances = (
-        ("Cannot install FIPS on a container", util.is_container, False),
-    )
+
+    @property
+    def static_affordances(self) -> "Tuple[StaticAffordance, ...]":
+        return (
+            ("Cannot install FIPS on a container", util.is_container, False),
+        )
 
     @property
     def messaging(
@@ -107,13 +112,6 @@ class FIPSUpdatesEntitlement(FIPSCommonEntitlement):
     title = "FIPS Updates"
     origin = "UbuntuFIPSUpdates"
     description = "Uncertified security updates to FIPS modules"
-    static_affordances = (
-        (
-            "Cannot install FIPS Updates on a container",
-            util.is_container,
-            False,
-        ),
-    )
 
     @property
     def messaging(
@@ -149,3 +147,13 @@ class FIPSUpdatesEntitlement(FIPSCommonEntitlement):
                 )
             ],
         }
+
+    @property
+    def static_affordances(self) -> "Tuple[StaticAffordance, ...]":
+        return (
+            (
+                "Cannot install FIPS Updates on a container",
+                util.is_container,
+                False,
+            ),
+        )
