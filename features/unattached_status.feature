@@ -54,7 +54,6 @@ Feature: Unattached status
             See https://ubuntu.com/advantage
             """ 
     
-    @wip
     @series.focal
     Scenario: Unattached status in a focal lxd container
         Given a `focal` lxd container with ubuntu-advantage-tools installed
