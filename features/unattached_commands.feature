@@ -2,7 +2,7 @@ Feature: Command behaviour when unattached
 
     @series.trusty
     Scenario Outline: Unattached commands that requires enabled user in a trusty lxd container
-        Given a `trusty` lxd container with ubuntu-advantage-tools installed
+        Given a `trusty` machine with ubuntu-advantage-tools installed
         When I run `ua <command>` as non-root
         Then I will see the following on stderr:
             """
@@ -22,7 +22,7 @@ Feature: Command behaviour when unattached
 
     @series.trusty
     Scenario Outline: Unattached command of a known service in a trusty lxd container
-        Given a `trusty` lxd container with ubuntu-advantage-tools installed
+        Given a `trusty` machine with ubuntu-advantage-tools installed
         When I run `ua <command> livepatch` as non-root
         Then I will see the following on stderr:
             """
@@ -43,7 +43,7 @@ Feature: Command behaviour when unattached
 
     @series.trusty
     Scenario Outline: Unattached command of an unknown service in a trusty lxd container
-        Given a `trusty` lxd container with ubuntu-advantage-tools installed
+        Given a `trusty` machine with ubuntu-advantage-tools installed
         When I run `ua <command> foobar` as non-root
         Then I will see the following on stderr:
             """
@@ -63,7 +63,7 @@ Feature: Command behaviour when unattached
 
     @series.trusty
     Scenario: Unattached auto-attach does nothing in a trusty lxd container
-        Given a `trusty` lxd container with ubuntu-advantage-tools installed
+        Given a `trusty` machine with ubuntu-advantage-tools installed
         When I run `ua auto-attach` as non-root
         Then I will see the following on stderr:
             """
@@ -78,7 +78,7 @@ Feature: Command behaviour when unattached
 
     @series.focal
     Scenario Outline: Unattached commands that requires enabled user in a focal lxd container
-        Given a `focal` lxd container with ubuntu-advantage-tools installed
+        Given a `focal` machine with ubuntu-advantage-tools installed
         When I run `ua <command>` as non-root
         Then I will see the following on stderr:
             """
@@ -99,7 +99,7 @@ Feature: Command behaviour when unattached
 
     @series.focal
     Scenario Outline: Unattached command of a known service in a focal lxd container
-        Given a `focal` lxd container with ubuntu-advantage-tools installed
+        Given a `focal` machine with ubuntu-advantage-tools installed
         When I run `ua <command> livepatch` as non-root
         Then I will see the following on stderr:
             """
@@ -120,7 +120,7 @@ Feature: Command behaviour when unattached
 
     @series.focal
     Scenario Outline: Unattached command of an unknown service in a focal lxd container
-        Given a `focal` lxd container with ubuntu-advantage-tools installed
+        Given a `focal` machine with ubuntu-advantage-tools installed
         When I run `ua <command> foobar` as non-root
         Then I will see the following on stderr:
             """
@@ -140,7 +140,7 @@ Feature: Command behaviour when unattached
 
     @series.focal
     Scenario: Unattached auto-attach does nothing in a focal lxd container
-        Given a `focal` lxd container with ubuntu-advantage-tools installed
+        Given a `focal` machine with ubuntu-advantage-tools installed
         When I run `ua auto-attach` as non-root
         Then I will see the following on stderr:
             """
