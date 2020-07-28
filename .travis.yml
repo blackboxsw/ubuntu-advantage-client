@@ -30,6 +30,7 @@ matrix:
           - sudo apt-get remove --yes --purge lxd lxd-client
           - sudo rm -Rf /var/lib/lxd
           - sudo snap install lxd
+          - sudo lxd waitready --timeout=300
           - sudo lxd init --auto
           - sudo usermod -a -G lxd $USER
           - sg lxd -c "UACLIENT_BEHAVE_BUILD_PR=${BUILD_PR} make test"
