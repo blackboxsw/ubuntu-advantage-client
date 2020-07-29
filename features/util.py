@@ -86,8 +86,17 @@ def launch_ec2(
         name="uaclient-integration"
     )
     inst = context.config.cloud_api.launch(
-        image_name, user_data=user_data, vpc=vpc
+        image_name, user_data=user_data, vpc=vpc, wait=False
     )
+
+    time.sleep(30)
+    for sleep in (5, 10, 15):
+       try:
+           inst.wait()
+           break
+       except Exception as e:
+           print("Retrying wait on {}".format(str(e)))
+           pass
 
     def cleanup_instance() -> None:
         if not context.config.destroy_instances:
