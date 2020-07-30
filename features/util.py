@@ -85,17 +85,26 @@ def launch_ec2(
     vpc = context.config.cloud_api.get_or_create_vpc(
         name="uaclient-integration"
     )
-    inst = context.config.cloud_api.launch(
-        image_name, user_data=user_data, vpc=vpc, wait=False
-    )
+    try:
+        inst = context.config.cloud_api.launch(
+            image_name, user_data=user_data, vpc=vpc
+        )
+    except Exception as e:
+        print(str(e))
+        raise
 
-    time.sleep(30)
+    print(
+        "AWS PRO instance launched: {}. Waiting for ssh access".format(
+            inst.id
+        )
+    )
+    time.sleep(15)
     for sleep in (5, 10, 15):
        try:
            inst.wait()
            break
        except Exception as e:
-           print("Retrying wait on {}".format(str(e)))
+           print("Retrying instance.wait on {}".format(str(e)))
            pass
 
     def cleanup_instance() -> None:
@@ -106,8 +115,6 @@ def launch_ec2(
 
     context.add_cleanup(cleanup_instance)
 
-    context.add_cleanup(cleanup_instance)
-    print("AWS PRO instance launched: {}".format(inst.id))
     return inst
 
 
@@ -391,7 +398,7 @@ def build_debs(
         print(
             "--- Assuming non-travis build. Creating: {}".format(SOURCE_PR_TGZ)
         )
-        subprocess.run(["make", "clean"])
+        #subprocess.run(["make", "clean"])
         os.chdir("..")
         subprocess.run(
             ["tar", "-zcf", SOURCE_PR_TGZ, "ubuntu-advantage-client"]
