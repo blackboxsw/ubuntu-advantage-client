@@ -398,10 +398,12 @@ def build_debs(
         print(
             "--- Assuming non-travis build. Creating: {}".format(SOURCE_PR_TGZ)
         )
-        #subprocess.run(["make", "clean"])
         os.chdir("..")
         subprocess.run(
-            ["tar", "-zcf", SOURCE_PR_TGZ, "ubuntu-advantage-client"]
+            [
+                "tar", "-zcf", SOURCE_PR_TGZ, "--exclude-vcs",
+                "--exclude-vcs-ignores", "ubuntu-advantage-client"
+            ]
         )
         os.chdir("ubuntu-advantage-client")
     buildscript = "build-from-source.sh"
