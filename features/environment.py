@@ -24,7 +24,7 @@ from features.util import (
 ALL_SUPPORTED_SERIES = ["bionic", "focal", "trusty", "xenial"]
 
 DAILY_PPA = "http://ppa.launchpad.net/canonical-server/ua-client-daily/ubuntu"
-EC2_KEY_FILE = "uaclient.pem"
+DEFAULT_PRIVATE_KEY_FILE = "/tmp/uaclient.pem"
 LOCAL_BUILD_ARTIFACTS_DIR = "/tmp/"
 
 USERDATA_INSTALL_DAILY_PRO_UATOOLS = """\
@@ -69,6 +69,9 @@ class UAClientBehaveConfig:
         cleaned up when all tests are complete.
     :param machine_type:
         The default machine_type to test: lxd.container, lxd.vm or pro.aws
+    :param private_key_file:
+        Optional path to pre-existing private key file to use when connecting
+        launched VMs via ssh.
     :param reuse_image:
         A string with an image name that should be used instead of building a
         fresh image for this test run.   If specified, this image will not be
@@ -90,6 +93,7 @@ class UAClientBehaveConfig:
         "contract_token",
         "contract_token_staging",
         "machine_type",
+        "private_key_file",
         "reuse_image",
     ]
     redact_options = [
@@ -114,6 +118,7 @@ class UAClientBehaveConfig:
         image_clean: bool = True,
         destroy_instances: bool = True,
         machine_type: str = "lxd.container",
+        private_key_file: str = None,
         reuse_image: str = None,
         contract_token: str = None,
         contract_token_staging: str = None,
@@ -128,6 +133,7 @@ class UAClientBehaveConfig:
         self.image_clean = image_clean
         self.destroy_instances = destroy_instances
         self.machine_type = machine_type
+        self.private_key_file = private_key_file
         self.reuse_image = reuse_image
         self.cmdline_tags = cmdline_tags
         self.filter_series = set(
@@ -233,17 +239,21 @@ def before_all(context: Context) -> None:
             secret_access_key=context.config.aws_secret_access_key,
             region="us-east-2",
         )
+        if context.config.private_key_file:
+            private_key_file = context.config.private_key_file
+        else:
+            private_key_file = DEFAULT_PRIVATE_KEY_FILE
         cloud_api = context.config.cloud_api
-        if not os.path.exists(EC2_KEY_FILE):
+        if not os.path.exists(private_key_file):
             if "uaclient-integration" in cloud_api.list_keys():
                 cloud_api.delete_key("uaclient-integration")
             keypair = cloud_api.client.create_key_pair(
                 KeyName="uaclient-integration"
             )
-            with open(EC2_KEY_FILE, "w") as stream:
+            with open(private_key_file, "w") as stream:
                 stream.write(keypair["KeyMaterial"])
-            os.chmod(EC2_KEY_FILE, 0o600)
-        cloud_api.use_key(EC2_KEY_FILE, EC2_KEY_FILE, "uaclient-integration")
+            os.chmod(private_key_file, 0o600)
+        cloud_api.use_key(private_key_file, private_key_file, "uaclient-integration")
     if context.config.reuse_image:
         series = lxc_get_property(
             context.config.reuse_image, property_name="series", image=True
@@ -381,6 +391,9 @@ def _capture_container_as_image(
     :param cloud_api: Optional pycloud BaseCloud api for applicable
         machine_types.
     """
+    logging.info(
+        "Creating  base image snapshot from vm {}".format(container_name)
+    )
     if cloud_api:
         inst = cloud_api.get_instance(container_name)
         return cloud_api.snapshot(instance=inst)
@@ -402,6 +415,9 @@ def build_debs_from_dev_instance(context: Context, series: str) -> "List[str]":
     :return: A list of paths to applicable deb files published.
     """
     time_suffix = datetime.datetime.now().strftime("%s%f")
+    logging.info(
+       "Launching vm to build ubuntu-advantage-*deb from local source tree"
+    )
     if context.config.machine_type == "pro.aws":
         inst = launch_ec2(
             context,
@@ -463,6 +479,9 @@ def create_uat_image(context: Context, series: str) -> None:
     if context.config.build_pr:
         deb_paths = build_debs_from_dev_instance(context, series)
 
+    logging.info(
+        "Launching VM to create a base image with updated ubuntu-advantage"
+    )
     if context.config.cloud_api:
         inst = launch_ec2(
             context,
