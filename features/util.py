@@ -452,6 +452,7 @@ def emit_spinner_on_travis():
 
     def emit_spinner():
         spinner = spinning_cursor()
+        print(" ", end="", flush=True)
         while True:
             time.sleep(5)
             print("\b%s" % next(spinner), end="", flush=True)
