@@ -196,6 +196,7 @@ class UAClientBehaveConfig:
                 region="us-east-2",
                 machine_type=self.machine_type,
             )
+            self.cloud_api = self.cloud_manager.api
         elif "azure" in self.machine_type:
             self.cloud_manager = cloud.Azure(
                 az_client_id,
@@ -204,6 +205,7 @@ class UAClientBehaveConfig:
                 az_subscription_id,
                 machine_type=self.machine_type,
             )
+            self.cloud_api = self.cloud_manager.api
 
         # Finally, print the config options.  This helps users debug the use of
         # config options, and means they'll be included in test logs in CI.
@@ -263,9 +265,8 @@ def before_all(context: Context) -> None:
     context.series_reuse_image = ""
     context.reuse_container = {}
     context.config = UAClientBehaveConfig.from_environ(context.config)
-    if context.config.machine_type.startswith("pro"):
+    if context.config.cloud_api:
         context.config.cloud_manager.manage_ssh_key()
-        context.config.cloud_api = context.config.cloud_manager.api
     if context.config.reuse_image:
         series = lxc_get_property(
             context.config.reuse_image, property_name="series", image=True
@@ -420,7 +421,7 @@ def build_debs_from_dev_instance(context: Context, series: str) -> "List[str]":
     """
     time_suffix = datetime.datetime.now().strftime("%s%f")
     print("--- Launching vm to build ubuntu-advantage*debs from local source")
-    if context.config.machine_type.startswith("pro"):
+    if "pro" in context.config.machine_type:
         inst = context.config.cloud_manager.launch(
             series=series, user_data=USERDATA_INSTALL_DAILY_PRO_UATOOLS
         )
