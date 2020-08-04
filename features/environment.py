@@ -193,7 +193,6 @@ class UAClientBehaveConfig:
                 self.cloud_manager = cloud.EC2(
                     aws_access_key_id=aws_access_key_id,
                     aws_secret_access_key=aws_secret_access_key,
-                    region="us-east-2",
                     machine_type=self.machine_type,
                 )
             elif self.machine_type == "pro.azure":
