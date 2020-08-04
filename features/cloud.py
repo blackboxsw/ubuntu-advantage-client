@@ -26,16 +26,12 @@ class Cloud:
     pro_ids_path = ""
     env_vars: "Tuple[str, ...]" = ()
 
-<<<<<<< HEAD
     def __init__(
         self,
         machine_type: str,
         region: "Optional[str]" = None,
         tag: "Optional[str]" = "uaclientci",
     ) -> None:
-=======
-    def __init__(self, tag: str, region: str, machine_type: str) -> None:
->>>>>>> 3fb5cb6... Update integration cloud module
         self.tag = tag
         self.machine_type = machine_type
         self.region = region
@@ -214,15 +210,9 @@ class EC2(Cloud):
         self,
         aws_access_key_id: "Optional[str]",
         aws_secret_access_key: "Optional[str]",
-<<<<<<< HEAD
         machine_type: str,
         region: "Optional[str]" = "us-east-2",
         tag: "Optional[str]" = None,
-=======
-        region: str,
-        machine_type: str,
-        tag: str = "uaclientci",
->>>>>>> 3fb5cb6... Update integration cloud module
     ) -> None:
         self.aws_access_key_id = aws_access_key_id
         self.aws_secret_access_key = aws_secret_access_key
@@ -230,11 +220,7 @@ class EC2(Cloud):
             filename="pycloudlib-behave.log", level=logging.DEBUG
         )
 
-<<<<<<< HEAD
         super().__init__(region=region, machine_type=machine_type, tag=tag)
-=======
-        super().__init__(tag, region, machine_type)
->>>>>>> 3fb5cb6... Update integration cloud module
 
     @property
     def api(self) -> pycloudlib.cloud.BaseCloud:
@@ -326,12 +312,9 @@ class Azure(Cloud):
         A tag to be used when creating the resources on the cloud provider
     :region:
         The region to create the resources on
-<<<<<<< HEAD
-=======
     :keep_resources:
         A boolean that indicates if we should keep the resources after
         running the test
->>>>>>> 3fb5cb6... Update integration cloud module
     """
 
     AZURE_PUB_KEY_FILE = "ua_az_pub_key.txt"
@@ -347,7 +330,6 @@ class Azure(Cloud):
 
     def __init__(
         self,
-<<<<<<< HEAD
         machine_type: str,
         region: "Optional[str]" = "centralus",
         tag: "Optional[str]" = None,
@@ -355,16 +337,7 @@ class Azure(Cloud):
         az_client_secret: "Optional[str]" = None,
         az_tenant_id: "Optional[str]" = None,
         az_subscription_id: "Optional[str]" = None,
-=======
-        az_client_id: "Optional[str]",
-        az_client_secret: "Optional[str]",
-        az_tenant_id: "Optional[str]",
-        az_subscription_id: "Optional[str]",
-        machine_type: str,
-        tag: str = "uaclientci",
-        region: str = "centralus",
         keep_resources: bool = False,
->>>>>>> 3fb5cb6... Update integration cloud module
     ) -> None:
         self.az_client_id = az_client_id
         self.az_client_secret = az_client_secret
@@ -372,11 +345,7 @@ class Azure(Cloud):
         self.az_subscription_id = az_subscription_id
         self.keep_resources = keep_resources
 
-<<<<<<< HEAD
         super().__init__(machine_type=machine_type, region=region, tag=tag)
-=======
-        super().__init__(tag, region, machine_type)
->>>>>>> 3fb5cb6... Update integration cloud module
 
     @property
     def api(self) -> pycloudlib.cloud.BaseCloud:

@@ -170,39 +170,40 @@ class UAClientBehaveConfig:
             if self.image_clean:
                 print(" Reuse_image specified, it will not be deleted.")
 
-        if not self.machine_type.startswith("pro"):
-            pro_envs = cloud.Azure.env_vars + cloud.EC2.env_vars
-            for env_name in pro_envs:
-                attr_name = env_name.replace("UACLIENT_BEHAVE_", "").lower()
-                if getattr(self, attr_name):
-                    print(
-                        " --- Ignoring UACLIENT_BEHAVE_{} because machine_type"
-                        " is {}".format(env_name, self.machine_type)
+        ignore_vars = ()
+        if "aws" not in self.machine_type:
+            ignore_vars += cloud.EC2.env_vars
+        if "azure" not in self.machine_type:
+            ignore_vars += cloud.Azure.env_vars
+        if "lxd" not in self.machine_type:
+            ignore_vars += (
+                "UACLIENT_BEHAVE_CONTRACT_TOKEN",
+                "UACLIENT_BEHAVE_CCONTRACT_TOKEN_STAGING",
+            )
+        for env_name in ignore_vars:
+            attr_name = env_name.replace("UACLIENT_BEHAVE_", "").lower()
+            if getattr(self, attr_name):
+                print(
+                    " --- Ignoring {} because machine_type is {}".format(
+                        env_name, self.machine_type
                     )
-                    setattr(self, attr_name, None)
-        else:
-            # Machine-type precludes use of any contract tokens
-            for attr_name in ("contract_token", "contract_token_staging"):
-                if getattr(self, attr_name):
-                    print(
-                        " --- Ignoring UACLIENT_BEHAVE_{} because machine_type"
-                        " is {}".format(attr_name.upper(), self.machine_type)
-                    )
-                    setattr(self, attr_name, None)
-            if self.machine_type == "pro.aws":
-                self.cloud_manager = cloud.EC2(
-                    aws_access_key_id=aws_access_key_id,
-                    aws_secret_access_key=aws_secret_access_key,
-                    machine_type=self.machine_type,
                 )
-            elif self.machine_type == "pro.azure":
-                self.cloud_manager = cloud.Azure(
-                    az_client_id=az_client_id,
-                    az_client_secret=az_client_secret,
-                    az_tenant_id=az_tenant_id,
-                    az_subscription_id=az_subscription_id,
-                    machine_type=self.machine_type,
-                )
+                setattr(self, attr_name, None)
+        if "aws" in self.machine_type:
+            self.cloud_manager = cloud.EC2(
+                aws_access_key_id,
+                aws_secret_access_key,
+                region="us-east-2",
+                machine_type=self.machine_type,
+            )
+        elif "azure" in self.machine_type:
+            self.cloud_manager = cloud.Azure(
+                az_client_id,
+                az_client_secret,
+                az_tenant_id,
+                az_subscription_id,
+                machine_type=self.machine_type,
+            )
 
         # Finally, print the config options.  This helps users debug the use of
         # config options, and means they'll be included in test logs in CI.
