@@ -323,7 +323,7 @@ def _should_skip_tags(context: Context, tags: "List") -> str:
 
     for tag in tags:
         parts = tag.split(".")
-        if parts[2] == "machine_type":
+        if "machine_type" in parts:
             has_machine_type = True
             machine_types.append(tag)
             if machine_type in tag:
