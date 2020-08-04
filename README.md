@@ -1,4 +1,4 @@
-# Ubuntu Advantage Client
+# Ubuntu Advantage Client a
 
 [![Build Status](https://travis-ci.org/canonical/ubuntu-advantage-client.svg?branch=master)](https://travis-ci.org/github/canonical/ubuntu-advantage-client)
 
