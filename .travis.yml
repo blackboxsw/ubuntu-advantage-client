@@ -12,7 +12,7 @@ script:
 matrix:
   fast_finish: true
   include:
-    - if: $UACLIENT_BEHAVE_AZ_CLIENT_ID
+    - if: env(UACLIENT_BEHAVE_AZ_CLIENT_ID)
       python: 3.7
       env: TOXENV=behave-pro-azure
       script:
