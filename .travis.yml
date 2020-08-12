@@ -8,13 +8,28 @@ install:
   - make testdeps
 script:
   - make test
+stages:
+  - build and style
+  - test
 
 matrix:
   fast_finish: true
   include:
     - if: env(UACLIENT_BEHAVE_AWS_SECRET_ACCESS_KEY) AND env(UACLIENT_BEHAVE_CONTRACT_TOKEN)
+      stage: test
       python: 3.7
-      env: TOXENV=behave-aws
+      env:
+          - TOXENV=behave-aws
+          - AWS_DEFAULT_REGION=us-east-2
+          - AWS_ACCESS_KEY_ID=${UACLIENT_BEHAVE_AWS_ACCESS_KEY_ID}
+          - AWS_SECRET_ACCESS_KEY=${UACLIENT_BEHAVE_AWS_SECRET_ACCESS_KEY}
+      install:
+          # Required so `git describe` will definitely find a tag; see
+          # https://github.com/travis-ci/travis-ci/issues/7422
+          - git fetch --unshallow
+          - make testdeps
+          - pip install boto3
+          - git clone https://github.com/canonical/server-test-scripts.git
       script:
           - >
               if [ "$TRAVIS_EVENT_TYPE" == "cron" ]; then
@@ -29,7 +44,13 @@ matrix:
           - sudo apt-get remove --yes --purge lxd lxd-client
           - sudo rm -Rf /var/lib/lxd
           - UACLIENT_BEHAVE_BUILD_PR=${BUILD_PR} make test
+          - >
+            for key_name in `ls *pem`; do
+                K=${key_name/ec2-/};
+                python3 server-test-scripts/ubuntu-advantage-client/ec2_cleanup.py -t ${K%.pem} || true
+            done;
     - if: env(UACLIENT_BEHAVE_AZ_CLIENT_SECRET)
+      stage: test
       python: 3.7
       env: TOXENV=behave-azure-pro
       script:
@@ -47,6 +68,7 @@ matrix:
           - sudo rm -Rf /var/lib/lxd
           - UACLIENT_BEHAVE_BUILD_PR=${BUILD_PR} make test
     - if: env(UACLIENT_BEHAVE_AZ_CLIENT_SECRET) AND env(UACLIENT_BEHAVE_CONTRACT_TOKEN)
+      stage: test
       python: 3.7
       env: TOXENV=behave-azure
       script:
@@ -64,8 +86,13 @@ matrix:
           - sudo rm -Rf /var/lib/lxd
           - UACLIENT_BEHAVE_BUILD_PR=${BUILD_PR} make test
     - if: env(UACLIENT_BEHAVE_AWS_SECRET_ACCESS_KEY)
+      stage: test
       python: 3.7
-      env: TOXENV=behave-aws-pro
+      env:
+          - TOXENV=behave-aws-pro
+          - AWS_DEFAULT_REGION=us-east-2
+          - AWS_ACCESS_KEY_ID=${UACLIENT_BEHAVE_AWS_ACCESS_KEY_ID}
+          - AWS_SECRET_ACCESS_KEY=${UACLIENT_BEHAVE_AWS_SECRET_ACCESS_KEY}
       script:
           - >
               if [ "$TRAVIS_EVENT_TYPE" == "cron" ]; then
@@ -80,7 +107,13 @@ matrix:
           - sudo apt-get remove --yes --purge lxd lxd-client
           - sudo rm -Rf /var/lib/lxd
           - UACLIENT_BEHAVE_BUILD_PR=${BUILD_PR} make test
+          - >
+            for key_name in `ls *pem`; do
+                K=${key_name/ec2-/};
+                python3 server-test-scripts/ubuntu-advantage-client/ec2_cleanup.py -t ${K%.pem} || true
+            done;
     - if: env(UACLIENT_BEHAVE_CONTRACT_TOKEN)
+      stage: test
       python: 3.7
       env: TOXENV=behave-14.04
       script:
@@ -104,6 +137,7 @@ matrix:
           - sudo usermod -a -G lxd $USER
           - sg lxd -c "UACLIENT_BEHAVE_BUILD_PR=${BUILD_PR} make test"
     - if: env(UACLIENT_BEHAVE_CONTRACT_TOKEN)
+      stage: test
       python: 3.7
       env: TOXENV=behave-16.04
       script:
@@ -127,6 +161,7 @@ matrix:
           - sudo usermod -a -G lxd $USER
           - sg lxd -c "UACLIENT_BEHAVE_BUILD_PR=${BUILD_PR} make test"
     - if: env(UACLIENT_BEHAVE_CONTRACT_TOKEN)
+      stage: test
       python: 3.7
       env: TOXENV=behave-18.04
       script:
@@ -150,6 +185,7 @@ matrix:
           - sudo usermod -a -G lxd $USER
           - sg lxd -c "UACLIENT_BEHAVE_BUILD_PR=${BUILD_PR} make test"
     - if: env(UACLIENT_BEHAVE_CONTRACT_TOKEN)
+      stage: test
       python: 3.7
       env: TOXENV=behave-20.04
       script:
@@ -174,6 +210,12 @@ matrix:
           - sg lxd -c "UACLIENT_BEHAVE_BUILD_PR=${BUILD_PR} make test"
     - env:
         PACKAGE_BUILD_SERIES=trusty
+      stage: build and style
+      before_cache:
+         - touch ${TRAVIS_BUILD_DIR}/tags/uaclient-ci-0811-181610
+      cache:
+         - directories:
+           - ${TRAVIS_BUILD_DIR}/tags
       install:
         - make travis-deb-install
       script:
@@ -186,35 +228,45 @@ matrix:
         - make travis-deb-script
     - env:
         PACKAGE_BUILD_SERIES=bionic
+      stage: build and style
       install:
         - make travis-deb-install
       script:
         - make travis-deb-script
     - env:
         PACKAGE_BUILD_SERIES=eoan
+      stage: build and style
       install:
         - make travis-deb-install
       script:
         - make travis-deb-script
     - env:
         PACKAGE_BUILD_SERIES=focal
+      stage: build and style
       install:
         - make travis-deb-install
       script:
         - make travis-deb-script
     - python: 3.4
+      stage: build and style
       env: TOXENV=py3-trusty,flake8-trusty
       dist: trusty
     - python: 3.5
+      stage: build and style
       env: TOXENV=py3-xenial,flake8-xenial
       dist: xenial
     - python: 3.6
+      stage: build and style
       env: TOXENV=py3-bionic,flake8-bionic
     - python: 3.7
+      stage: build and style
       env: TOXENV=py3-eoan,flake8-eoan
     - python: 3.8
+      stage: build and style
       env: TOXENV=py3,flake8
     - python: 3.7
+      stage: build and style
       env: TOXENV=mypy
     - python: 3.7
+      stage: build and style
       env: TOXENV=black
