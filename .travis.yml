@@ -35,4 +35,4 @@ matrix:
         - ls ${TRAVIS_BUILD_DIR}/cache-artifacts
       cache:
         - directories:
-          ${TRAVIS_BUILD_DIR}/cache-artifacts
+          - ${TRAVIS_BUILD_DIR}/cache-artifacts
