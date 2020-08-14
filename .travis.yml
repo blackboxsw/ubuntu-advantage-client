@@ -1,6 +1,9 @@
 language: python
 dist: bionic
 
+stages:
+ - build
+ - cleanup
 install:
   # Required so `git describe` will definitely find a tag; see
   # https://github.com/travis-ci/travis-ci/issues/7422
@@ -14,7 +17,19 @@ matrix:
   include:
     - env:
         PACKAGE_BUILD_SERIES=xenial
+      stage: build
+      before_cache:
+        - cp *deb ${TRAVIS_BUILD_DIR}/cache-artifacts
+      cache:
+        - directories:
+          ${TRAVIS_BUILD_DIR}/cache-artifacts
       install:
         - make travis-deb-install
       script:
         - make travis-deb-script
+    - script:
+        - ls ${TRAVIS_BUILD_DIR}/cache-artifacts
+      stage: cleanup
+      cache:
+        - directories:
+          ${TRAVIS_BUILD_DIR}/cache-artifacts
