@@ -23,7 +23,7 @@ matrix:
         - cp *deb ${TRAVIS_BUILD_DIR}/cache-artifacts
       cache:
         - directories:
-          ${TRAVIS_BUILD_DIR}/cache-artifacts
+          - ${TRAVIS_BUILD_DIR}/cache-artifacts
       install:
         - make travis-deb-install
       script:
