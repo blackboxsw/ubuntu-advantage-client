@@ -31,8 +31,8 @@ matrix:
     - env:
         CHAD=blah
       stage: cleanup
-      script:
-        - ls cache-artifacts
       cache:
         - directories:
           - cache-artifacts
+      script:
+        - ls cache-artifacts
