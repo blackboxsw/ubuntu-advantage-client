@@ -20,10 +20,10 @@ matrix:
         PACKAGE_BUILD_SERIES=xenial
       stage: build
       before_cache:
-        - cp *deb ${TRAVIS_BUILD_DIR}/cache-artifacts
+        - cp *deb cache-artifacts/
       cache:
         - directories:
-          - ${TRAVIS_BUILD_DIR}/cache-artifacts
+          - cache-artifacts
       install:
         - make travis-deb-install
       script:
@@ -32,7 +32,7 @@ matrix:
         CHAD=blah
       stage: cleanup
       script:
-        - ls ${TRAVIS_BUILD_DIR}/cache-artifacts
+        - ls cache-artifacts
       cache:
         - directories:
           - ${TRAVIS_BUILD_DIR}/cache-artifacts
