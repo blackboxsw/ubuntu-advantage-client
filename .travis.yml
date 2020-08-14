@@ -4,6 +4,7 @@ dist: bionic
 stages:
  - build
  - cleanup
+
 install:
   # Required so `git describe` will definitely find a tag; see
   # https://github.com/travis-ci/travis-ci/issues/7422
@@ -27,9 +28,11 @@ matrix:
         - make travis-deb-install
       script:
         - make travis-deb-script
-    - script:
-        - ls ${TRAVIS_BUILD_DIR}/cache-artifacts
+    - env:
+        CHAD=blah
       stage: cleanup
+      script:
+        - ls ${TRAVIS_BUILD_DIR}/cache-artifacts
       cache:
         - directories:
           ${TRAVIS_BUILD_DIR}/cache-artifacts
