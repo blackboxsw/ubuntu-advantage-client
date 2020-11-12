@@ -29,7 +29,6 @@ matrix:
           - git clone https://github.com/canonical/pycloudlib.git
           - cd pycloudlib
           - pip install -r requirements.txt
-          - pip install -e .
           - cd ..
       script:
           - DATE=`date +%D`
