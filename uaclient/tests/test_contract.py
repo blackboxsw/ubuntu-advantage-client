@@ -2,7 +2,6 @@ import copy
 import mock
 import pytest
 import socket
-import urllib
 
 from uaclient.contract import (
     API_V1_CONTEXT_MACHINE_TOKEN,
@@ -196,13 +195,7 @@ class TestGetAvailableResources:
         """Call UAContractClient.request_resources to get updated resources."""
         cfg = FakeConfig()
 
-        platform = util.get_platform_info()
-        resource_params = {
-            "architecture": platform["arch"],
-            "series": platform["series"],
-            "kernel": platform["kernel"],
-        }
-        url = API_V1_RESOURCES + "?" + urllib.parse.urlencode(resource_params)
+        url = API_V1_RESOURCES
 
         new_resources = [{"name": "new_resource", "available": False}]
 
