@@ -127,7 +127,7 @@ Feature: Enable command behaviour when attached to an UA subscription
             ESM Infra is already enabled.
             See: sudo ua status
             """
-        And I run `apt install -y <pkg-version>` with sudo, retrying exit [100]
+        When I run `apt install -y <pkg-version>` with sudo, retrying exit [100]
         When I run `apt update` with sudo
         Then stdout matches regexp
         """
