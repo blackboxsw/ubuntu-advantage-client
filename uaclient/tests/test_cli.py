@@ -340,7 +340,9 @@ class TestAssertLockFile:
         assert mock.sentinel.success == ret
         lock_msg = "Operation in progress: some operation"
         assert [mock.call("", lock_msg)] == m_add_notice.call_args_list
-        assert [mock.call("", lock_msg)] == m_remove_notice.call_args_list
+        assert [
+            mock.call("", "Operation in progress.*")
+        ] == m_remove_notice.call_args_list
         assert [
             mock.call("lock", "123:some operation")
         ] == m_write_cache.call_args_list

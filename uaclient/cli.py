@@ -50,10 +50,10 @@ DEFAULT_LOG_FORMAT = (
 STATUS_FORMATS = ["tabular", "json"]
 
 
-# Set a module-level variable here so we don't have to reinstantiate
+# Set a module-level callable here so we don't have to reinstantiate
 # UAConfig in order to determine dynamic data_path exception handling of
 # main_error_handler
-_LOCK_FILE = None
+_CLEAR_LOCK_FILE = None
 
 
 class UAArgumentParser(argparse.ArgumentParser):
@@ -121,8 +121,7 @@ def assert_lock_file(lock_holder=None):
     def wrapper(f):
         @wraps(f)
         def new_f(args, cfg, **kwargs):
-            global _LOCK_FILE
-            lock_file = cfg.data_path("lock")
+            global _CLEAR_LOCK_FILE
             (lock_pid, cur_lock_holder) = cfg.check_lock_info()
             if lock_pid > 0:
                 raise exceptions.LockHeldError(
@@ -133,10 +132,10 @@ def assert_lock_file(lock_holder=None):
             cfg.write_cache("lock", "{}:{}".format(os.getpid(), lock_holder))
             notice_msg = "Operation in progress: {}".format(lock_holder)
             cfg.add_notice("", notice_msg)
-            _LOCK_FILE = lock_file  # Set _LOCK_FILE for cleanup
+            _CLEAR_LOCK_FILE = cfg.delete_cache_key
             retval = f(args, cfg, **kwargs)
-            util.remove_file(lock_file)
-            cfg.remove_notice("", notice_msg)
+            cfg.delete_cache_key("lock")
+            _CLEAR_LOCK_FILE = None  # Unset so we don't call it again
             return retval
 
         return new_f
@@ -940,8 +939,8 @@ def main_error_handler(func):
             with util.disable_log_to_console():
                 logging.exception("KeyboardInterrupt")
             print("Interrupt received; exiting.", file=sys.stderr)
-            if _LOCK_FILE:
-                util.remove_file(_LOCK_FILE)
+            if _CLEAR_LOCK_FILE:
+                _CLEAR_LOCK_FILE("lock")
             sys.exit(1)
         except util.UrlError as exc:
             with util.disable_log_to_console():
@@ -957,14 +956,14 @@ def main_error_handler(func):
             with util.disable_log_to_console():
                 logging.exception(exc.msg)
             print("{}".format(exc.msg), file=sys.stderr)
-            if _LOCK_FILE:
-                util.remove_file(_LOCK_FILE)
+            if _CLEAR_LOCK_FILE:
+                _CLEAR_LOCK_FILE("lock")
             sys.exit(exc.exit_code)
         except Exception:
             with util.disable_log_to_console():
                 logging.exception("Unhandled exception, please file a bug")
-            if _LOCK_FILE:
-                util.remove_file(_LOCK_FILE)
+            if _CLEAR_LOCK_FILE:
+                _CLEAR_LOCK_FILE("lock")
             print(ua_status.MESSAGE_UNEXPECTED_ERROR, file=sys.stderr)
             sys.exit(1)
 
